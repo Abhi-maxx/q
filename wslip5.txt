@@ -1,0 +1,132 @@
+Slip 5 
+Q1) 
+<!DOCTYPE html> 
+<html lang=”en”> 
+<head> 
+<meta charset=”UTF-8”> 
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0”> 
+<title>List of Persons</title> 
+<style> 
+Table { 
+Border-collapse: collapse; 
+Width: 50%; 
+Margin: 20px; 
+Border: 1px solid #ddd; 
+Border-radius: 10px; 
+} 
+Th, td { 
+Border: 1px solid #ddd; 
+Text-align: center; 
+Padding: 10px; 
+} 
+Th { 
+Background-color: #f2f2f2; 
+} 
+</style> 
+</head> 
+<body> 
+<h2>List of Persons</h2> 
+<table> 
+<thead> 
+<tr> 
+<th>Srno</th> 
+<th>Person Name</th> 
+<th>Age</th> 
+<th>Country</th> 
+</tr> 
+</thead> 
+<tbody> 
+<tr> 
+<td>1</td> 
+<td>John Doe</td> 
+<td>30</td> 
+<td>USA</td> 
+</tr> 
+<tr> 
+<td>2</td> 
+<td>Jane Smith</td> 
+<td>25</td> 
+<td>Canada</td> 
+</tr> 
+<tr> 
+<td>3</td> 
+<td>Bob Johnson</td> 
+<td>35</td> 
+<td>UK</td> 
+</tr> 
+</tbody> 
+</table> 
+</body> 
+</html> 
+Q2) 
+// Project Collection 
+[ 
+{ 
+“project_id”: 1, 
+“project_name”: “Sales Automation”, 
+“project_type”: “IT”, 
+“duration_months”: 5 
+}, 
+{ 
+“project_id”: 2, 
+“project_name”: “Marketing Campaign”, 
+“project_type”: “Marketing”, 
+“duration_months”: 2 
+}, 
+{ 
+“project_id”: 3, 
+“project_name”: “Infrastructure Upgrade”, 
+“project_type”: “IT”, 
+“duration_months”: 6 
+}, 
+{ 
+“project_id”: 4, 
+“project_name”: “Employee Training”, 
+“project_type”: “HR”, 
+“duration_months”: 4 
+}, 
+{ 
+} 
+] 
+“project_id”: 5, 
+“project_name”: “Product Launch”, 
+“project_type”: “Marketing”, 
+“duration_months”: 3 
+// Employee Collection 
+[ 
+{ 
+“employee_id”: 101, 
+“employee_name”: “Mr. Patil”, 
+“projects_working_on”: [1, 3] 
+}, 
+{ 
+“employee_id”: 102, 
+“employee_name”: “Ms. Deshmukh”, 
+“projects_working_on”: [2, 4] 
+}, 
+{ 
+“employee_id”: 103, 
+“employee_name”: “Mr. Shah”, 
+“projects_working_on”: [1, 5] 
+}, 
+{ 
+“employee_id”: 104, 
+“employee_name”: “Mrs. Gupta”, 
+“projects_working_on”: [3, 4] 
+}, 
+{ 
+} 
+] 
+“employee_id”: 105, 
+“employee_name”: “Ms. Joshi”, 
+“projects_working_on”: [2, 5] 
+a. List all names of projects where Project_type = “Marketing”: 
+Db.project.find({ project_type: “Marketing” }, { _id: 0, project_name: 1 }) 
+b. List all the projects with a duration greater than 3 months: 
+Db.project.find({ duration_months: { $gt: 3 } }) 
+c. Count the number of employees working on the “Sales Automation” project: 
+Db.employee.find({ projects_working_on: 1 }).count() 
+d. List the names of projects on which Mr. Patil is working: 
+Var projectsWorkingOn = db.employee.findOne({ employee_name: “Mr. Patil” 
+}).projects_working_on; 
+Db.project.find({ project_id: { $in: projectsWorkingOn } }, { _id: 0, project_name: 1 })

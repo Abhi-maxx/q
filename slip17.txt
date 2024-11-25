@@ -1,0 +1,87 @@
+Slip 17
+Q1)
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.box {
+Width: 300px;
+Height: 200px;
+Border: 1px solid black;
+Padding: 20px;
+Margin: 30px;
+Box-sizing: border-box;
+Background-color: orange;
+}
+.inner-box {
+Width: 100%;
+Height: 50%;
+Background-color: yellow;
+}
+</style>
+</head>
+<body>
+<div class=”box”>
+<div class=”inner-box”>
+<p>M.Sc(computer sci)</p>
+<p>Academic Year 2023-24</p>
+</div>
+<div class=”inner-box”>
+<!—You can add your content here →
+</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+Q2)
+// Create Authors
+CREATE (:Author {name: “Author1”});
+CREATE (:Author {name: “Author2”});
+// Create Books
+CREATE (:Book {title: “Comics”})-[:WROTE]->(:Author {name: “Author1”});
+CREATE (:Book {title: “Mystery”})-[:WROTE]->(:Author {name: “Author2”});
+// Create Publishers
+CREATE (:Publisher {name: “Sage”});
+CREATE (:Publisher {name: “Nova”});
+// Connect Books to Publishers
+MATCH (b:Book {title: “Comics”}), (p:Publisher {name: “Sage”})
+CREATE (b)-[:PUBLISHED]->(p);
+MATCH (b:Book {title: “Mystery”}), (p:Publisher {name: “Nova”})
+CREATE (b)-[:PUBLISHED]->(p);
+// Create Readers
+CREATE (:Reader {name: “Reader1”});
+CREATE (:Reader {name: “Reader2”});
+// Connect Readers to Books
+MATCH (r:Reader {name: “Reader1”}), (b:Book {title: “Comics”})
+CREATE (r)-[:READ]->(b);
+MATCH (r:Reader {name: “Reader2”}), (b:Book {title: “Mystery”})
+CREATE (r)-[:READ]->(b);
+// Recommendations and Reviews
+MATCH (r:Reader {name: “Reader1”}), (b:Book {title: “Comics”})
+CREATE (r)-[:RECOMMENDED]->(b);
+MATCH (r:Reader {name: “Reader2”}), (b:Book {title: “Mystery”})
+CREATE (r)-[:REVIEWED]->(:Review {rating: 4});
+a. List the names of authors who wrote “Comics”:
+MATCH (a:Author)-[:WROTE]->(b:Book {title: “Comics”})
+RETURN DISTINCT a.name;
+b. Count the number of readers of a specific book published by “Sage” (replace
+“BookTitle” with the specific book title):
+MATCH (p:Publisher {name: “Sage”})<-[:PUBLISHED]-(b:Book {title: “BookTitle”})<-
+[:READ]-(r:Reader)
+RETURN COUNT(DISTINCT r) AS numberOfReaders;
+c. List all the publishers whose name starts with “N”:
+MATCH (p:Publisher)
+WHERE p.name STARTS WITH “N”
+RETURN p.name;
+d. List the names of people who have given a rating of (>=3) for a specific book
+(replace “BookTitle” with the specific book title):
+MATCH (r:Reader)-[:REVIEWED]->(rev:Review {rating: 3})-[:OF_BOOK]->(b:Book {title:
+“BookTitle”})
+RETURN DISTINCT r.name;

@@ -1,0 +1,93 @@
+ 
+Slip 7 
+ 
+Q1) 
+ 
+<!DOCTYPE html> 
+<html lang=”en”> 
+<head> 
+    <meta charset=”UTF-8”> 
+    <meta name=”viewport” content=”width=device-width, initial-scale=1.0”> 
+    <title>3D Text Effect</title> 
+ 
+    <style> 
+        Body { 
+            Font-family: ‘Arial’, sans-serif; 
+            Background-color: #f0f0f0; 
+            Display: flex; 
+            Justify-content: center; 
+            Align-items: center; 
+            Height: 100vh; 
+            Margin: 0; 
+        } 
+ 
+        .three-d-text { 
+            Font-size: 3em; 
+            Font-weight: bold; 
+            Color: #3498db; 
+            Text-shadow: 4px 4px 0 #2980b9, 7px 7px 0 #2c3e50; 
+            Transition: transform 0.3s ease-in-out; 
+        } 
+ 
+        .three-d-text:hover { 
+            Transform: translate(3px, 3px); 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+    <div class=”three-d-text”>Hover me!</div> 
+ 
+</body> 
+</html> 
+ 
+Q2) 
+ 
+// Customer Collection 
+[ 
+  { 
+    “customer_id”: 1, 
+    “first_name”: “John”, 
+    “last_name”: “Smith”, 
+    “dob”: “1990-05-15”, 
+    “accounts”: [ 
+      { “account_id”: 101, “account_type”: “Savings”, “branch”: “Main”, “open_date”: 
+“2020-01-01” }, 
+{ “account_id”: 102, “account_type”: “Checking”, “branch”: “Downtown”, 
+“open_date”: “2021-03-10” } 
+] 
+}, 
+{ 
+“customer_id”: 2, 
+“first_name”: “Sara”, 
+“last_name”: “Jones”, 
+“dob”: “1985-08-22”, 
+“accounts”: [ 
+{ “account_id”: 103, “account_type”: “Savings”, “branch”: “Main”, “open_date”: 
+“2020-01-01” }, 
+{ “account_id”: 104, “account_type”: “Loan”, “branch”: “Downtown”, “open_date”: 
+“2022-05-20” } 
+] 
+}, 
+// ... (additional customers) 
+] 
+// Transaction Collection 
+[ 
+{ “transaction_id”: 1, “account_id”: 101, “amount”: 500, “transaction_type”: “Deposit”, 
+“date”: “2022-01-15” }, 
+{ “transaction_id”: 2, “account_id”: 102, “amount”: -200, “transaction_type”: 
+“Withdrawal”, “date”: “2022-02-20” }, 
+// ... (additional transactions) 
+] 
+a. List names of all customers whose first name starts with an “S”: 
+Db.customer.find({ “first_name”: /^S/i }, { “_id”: 0, “first_name”: 1, “last_name”: 1 }) 
+b. List all customers who have opened an account on 1/1/2020 in the “Main” 
+branch: 
+Db.customer.find({ “accounts.open_date”: “2020-01-01”, “accounts.branch”: “Main” }, { 
+“_id”: 0, “first_name”: 1, “last_name”: 1 }) 
+c. List the names of customers where acctype is “Savings”: 
+Db.customer.find({ “accounts.account_type”: “Savings” }, { “_id”: 0, “first_name”: 1, 
+“last_name”: 1 }) 
+d. Count the total number of loan account holders in the “Downtown” branch: 
+Db.customer.find({ “accounts.account_type”: “Loan”, “accounts.branch”: “Downtown” 
+}).count()

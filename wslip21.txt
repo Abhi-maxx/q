@@ -1,0 +1,166 @@
+Slip 21 
+ 
+Q1) 
+ 
+<!DOCTYPE html> 
+<html lang=”en”> 
+<head> 
+    <meta charset=”UTF-8”> 
+    <meta name=”viewport” content=”width=device-width, initial-scale=1.0”> 
+    <title>Student Registration Form</title> 
+    <style> 
+        Body { 
+            Font-family: Arial, sans-serif; 
+            Background-color: #f4f4f4; 
+            Margin: 0; 
+            Display: flex; 
+            Align-items: center; 
+            Justify-content: center; 
+            Height: 100vh; 
+        } 
+        Form { 
+            Background-color: #fff; 
+            Padding: 20px; 
+            Border-radius: 8px; 
+            Box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        } 
+        Label { 
+            Display: block; 
+            Margin-bottom: 8px; 
+            Font-weight: bold; 
+        } 
+        Input { 
+            Width: 100%; 
+            Padding: 8px; 
+            Margin-bottom: 12px; 
+            Box-sizing: border-box; 
+        } 
+        Input[type=”submit”] { 
+            Background-color: #4CAF50; 
+            Color: white; 
+            Padding: 10px 15px; 
+            Border: none; 
+            Border-radius: 4px; 
+            Cursor: pointer; 
+        } 
+        Input[type=”reset”] { 
+            Background-color: #f44336; 
+            Color: white; 
+            Padding: 10px 15px; 
+            Border: none; 
+            Border-radius: 4px; 
+            Cursor: pointer; 
+            Margin-left: 10px; 
+        } 
+        .required { 
+            Color: red; 
+        } 
+        .message { 
+            Margin-top: 10px; 
+            Padding: 10px; 
+            Background-color: #e7f3fe; 
+            Border: 1px solid #4e7dcb; 
+            Border-radius: 4px; 
+            Display: none; 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+    <form id=”registrationForm”> 
+        <label for=”firstName”>First Name<span class=”required”>*</span>:</label> 
+        <input type=”text” id=”firstName” name=”firstName” required> 
+ 
+        <label for=”lastName”>Last Name<span class=”required”>*</span>:</label> 
+        <input type=”text” id=”lastName” name=”lastName” required> 
+ 
+        <label for=”email”>Email<span class=”required”>*</span>:</label> 
+        <input type=”email” id=”email” name=”email” required> 
+ 
+        <label for=”password”>Password<span class=”required”>*</span>:</label> 
+        <input type=”password” id=”password” name=”password” required> 
+ 
+        <input type=”submit” value=”Submit”> 
+        <input type=”reset” value=”Reset”> 
+ 
+        <div class=”message” id=”successMessage”>Registration Successful!</div> 
+        <div class=”message” id=”errorMessage”>Error submitting the form. Please try 
+again.</div> 
+    </form> 
+ 
+    <script> 
+        Const registrationForm = document.getElementById(‘registrationForm’); 
+        Const successMessage = document.getElementById(‘successMessage’); 
+        Const errorMessage = document.getElementById(‘errorMessage’); 
+ 
+        registrationForm.addEventListener(‘submit’, function (e) { 
+            e.preventDefault(); // Prevent the default form submission 
+            // You can add code here to handle the form submission, e.g., sending data to a 
+server 
+ 
+            // For demonstration purposes, show a success message 
+            successMessage.style.display = ‘block’; 
+ 
+            // Clear the form after a delay (in a real scenario, this may be replaced with 
+appropriate logic) 
+            setTimeout(() => { 
+                registrationForm.reset(); 
+                successMessage.style.display = ‘none’; 
+            }, 3000); 
+        }); 
+ 
+        registrationForm.addEventListener(‘reset’, function () { 
+            // Reset the success message on form reset 
+            successMessage.style.display = ‘none’; 
+        }); 
+    </script> 
+ 
+</body> 
+</html> 
+ 
+ 
+Q2) 
+ 
+// Create Brands 
+CREATE (:Brand {name: “Dr. Reddy”}); 
+CREATE (:Brand {name: “Cipla”}); 
+CREATE (:Brand {name: “SunPharma”}); 
+ 
+// Create Medicines 
+CREATE (:Medicine {name: “Medicine1”})-[:MANUFACTURES]->(:Brand {name: “Dr. 
+Reddy”})-[:USES {usePercentage: 80}]->(:State {name: “Rajasthan”}) 
+CREATE (:Medicine {name: “Medicine2”})-[:MANUFACTURES]->(:Brand {name: 
+“Cipla”})-[:USES {usePercentage: 95}]->(:State {name: “Rajasthan”}) 
+CREATE (:Medicine {name: “Medicine3”})-[:MANUFACTURES]->(:Brand {name: 
+“Cipla”})-[:USES {usePercentage: 60}]->(:State {name: “Gujarat”}) 
+ 
+// Create ProductTypes 
+CREATE (:ProductType {name: “Tablet”}) 
+CREATE (:ProductType {name: “Syrup”}) 
+CREATE (:ProductType {name: “Powder”}) 
+// Connect Medicines to ProductTypes 
+MATCH (m:Medicine {name: “Medicine1”})-[:BELONGS_TO]->(:ProductType {name: 
+“Tablet”}) 
+MATCH (m:Medicine {name: “Medicine2”})-[:BELONGS_TO]->(:ProductType {name: 
+“Syrup”}) 
+MATCH (m:Medicine {name: “Medicine3”})-[:BELONGS_TO]->(:ProductType {name: 
+“Powder”}) 
+a. List the names of different medicines considered in your graph: 
+MATCH (m:Medicine) 
+RETURN DISTINCT m.name; 
+b. List the medicines that are highly used in Rajasthan: 
+MATCH (m:Medicine)-[u:USES]->(s:State {name: “Rajasthan”}) 
+WHERE u.usePercentage >= 90 
+RETURN m.name; 
+c. List the highly used tablets in Gujarat: 
+MATCH (m:Medicine)-[u:USES]->(s:State {name: “Gujarat”})-[:BELONGS_TO]
+>(:ProductType {name: “Tablet”}) 
+WHERE u.usePercentage >= 90 
+RETURN m.name; 
+ 
+d. List the medicine names manufacturing “Powder”: 
+ 
+MATCH (m:Medicine)-[:BELONGS_TO]->(p:ProductType {name: “Powder”}) 
+RETURN DISTINCT m.name; 
+ 
+

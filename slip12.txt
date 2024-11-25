@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Registration Form</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+form {
+    max-width: 600px;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button[type="reset"] {
+    background-color: #f44336;
+}
+</style>
+</head>
+<body>
+<form id="customerRegistrationForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    
+    <label for="contactNo">Contact Number:</label>
+    <input type="tel" id="contactNo" name="contactNo" pattern="[0-9]{10}" required>
+    <small>Enter a 10-digit phone number.</small>
+    
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+    </select>
+    
+    <label for="preferredDays">Preferred Days of Purchasing:</label>
+    <input type="text" id="preferredDays" name="preferredDays">
+    
+    <label for="favoriteItem">Favorite Item:</label>
+    <select id="favoriteItem" name="favoriteItem">
+        <option value="clothing">Clothing</option>
+        <option value="electronics">Electronics</option>
+        <option value="homeAppliances">Home Appliances</option>
+        <option value="groceries">Groceries</option>
+    </select>
+    
+    <label for="suggestions">Suggestions:</label>
+    <textarea id="suggestions" name="suggestions"></textarea>
+    
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+</form>
+</body>
+</html>
+
+
+
+<!-- Q2 -->
+
+// Movie Collection
+[
+{ “movie_id”: 101, “movie_name”: “Inception”, “budget”: 200000000, “release_year”:
+2010, “producers”: [ “Christopher Nolan”, “Emma Thomas” ], “actors”: [ { “actor_name”:
+“Leonardo DiCaprio”, “role”: “Cobb” }, { “actor_name”: “Joseph Gordon-Levitt”, “role”:
+“Arthur” } ] },
+{ “movie_id”: 102, “movie_name”: “The Dark Knight”, “budget”: 250000000,
+“release_year”: 2008, “producers”: [ “Christopher Nolan”, “Emma Thomas” ], “actors”: [
+{ “actor_name”: “Christian Bale”, “role”: “Bruce Wayne” }, { “actor_name”: “Heath
+Ledger”, “role”: “Joker” } ] },
+// ... (additional movies)
+]
+// Producer Collection
+[
+{ “producer_name”: “Christopher Nolan”, “produced_movies”: [ { “movie_id”: 101,
+“movie_name”: “Inception” }, { “movie_id”: 102, “movie_name”: “The Dark Knight” } ] },
+{ “producer_name”: “Emma Thomas”, “produced_movies”: [ { “movie_id”: 101,
+“movie_name”: “Inception” }, { “movie_id”: 102, “movie_name”: “The Dark Knight” } ] },
+// ... (additional producers)
+]
+// Actor Collection
+[
+{ “actor_name”: “Leonardo DiCaprio”, “acted_movies”: [ { “movie_id”: 101,
+“movie_name”: “Inception” } ] },
+{ “actor_name”: “Joseph Gordon-Levitt”, “acted_movies”: [ { “movie_id”: 101,
+“movie_name”: “Inception” } ] },
+{ “actor_name”: “Christian Bale”, “acted_movies”: [ { “movie_id”: 102, “movie_name”:
+“The Dark Knight” } ] },
+// ... (additional actors)
+]
+a. List the names of movies with the highest budget:
+Db.movie.find({}, { “_id”: 0, “movie_name”: 1, “budget”: 1 }).sort({ “budget”: -1 }).limit(1)
+b. Display the details of producers who have produced more than one movie in a
+year:
+Db.producer.aggregate([
+{ $unwind: “$produced_movies” },
+{ $group: { “_id”: { “producer_name”: “$producer_name”, “release_year”:
+“$produced_movies.release_year” }, “count”: { $sum: 1 } } },
+{ $match: { “count”: { $gt: 1 } } },
+{ $project: { “_id”: 0, “producer_name”: “$_id.producer_name”, “release_year”:
+“$_id.release_year”, “count”: 1 } }
+])
+c. List the names of actors who have acted in at least one movie in which ‘Akshay’
+has acted:
+Var akshayMovies = db.actor.find({ “acted_movies.actor_name”: “Akshay” }, { “_id”: 0,
+“acted_movies.movie_name”: 1 }).map(function(actor) {
+Return actor.acted_movies.map(function(movie) {
+Return movie.movie_name;
+});
+}).flat();
+Db.actor.find({ “acted_movies.movie_name”: { $in: akshayMovies } }, { “_id”: 0,
+“actor_name”: 1 })
+d. List the names of movies produced by more than one producer:
+Db.movie.find({ “producers”: { $size: { $gt: 1 } } }, { “_id”: 0, “movie_name”: 1 })

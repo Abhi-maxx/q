@@ -1,0 +1,70 @@
+Slip 24 
+Q1) 
+ 
+<!DOCTYPE html> 
+<html> 
+ 
+<head> 
+    <title>Calendar</title> 
+</head> 
+ 
+<body> 
+    <h2>Input Types Examples</h2> 
+ 
+    <form action=””> 
+        <label for=”date”>Date:</label><br> 
+        <input type=”date” id=”date” name=”date”><br> 
+ 
+        <label for=”datetime”>Datetime:</label><br> 
+        <input type=”datetime” id=”datetime” name=”datetime”><br> 
+ 
+        <label for=”datetime-local”>Datetime-local:</label><br> 
+        <input type=”datetime-local” id=”datetime-local” name=”datetime-local”><br> 
+ 
+        <label for=”month”>Month:</label><br> 
+        <input type=”month” id=”month” name=”month”><br> 
+ 
+        <label for=”time”>Time:</label><br> 
+        <input type=”time” id=”time” name=”time”><br> 
+ 
+<label for=”week”>Week:</label><br> 
+<input type=”week” id=”week” name=”week”><br> 
+<input type=”submit” value=”Submit”> 
+</form> 
+</body> 
+</html> 
+Q2) 
+// Create Library and Book Types 
+CREATE (:Library {name: “University Library”})-[:HAS_TYPE]->(:BookType {name: “Text”}) 
+CREATE (:Library {name: “University Library”})-[:HAS_TYPE]->(:BookType {name: 
+“Reference”}) 
+CREATE (:Library {name: “University Library”})-[:HAS_TYPE]->(:BookType {name: 
+“Bibliography”}) 
+// Create Students, Purchases, and Recommendations 
+CREATE (:Student {name: “John Doe”})-[:BOUGHT]->(:BookType {name: “Text”}) 
+CREATE (:Student {name: “Jane Smith”})-[:BOUGHT]->(:BookType {name: “Reference”}) 
+CREATE (:Student {name: “Bob”})-[:BOUGHT]->(:BookType {name: “Text”}) 
+CREATE (:Student {name: “Alice”})-[:RECOMMENDS]->(:BookType {name: “Text”}) 
+CREATE (:Student {name: “Charlie”})-[:RECOMMENDS]->(:BookType {name: 
+“Reference”}) 
+CREATE (:Student {name: “David”})-[:RECOMMENDS]->(:BookType {name: 
+“Bibliography”}) 
+CREATE (:Student {name: “Eva”})-[:BOUGHT]->(:BookType {name: “Text”}) 
+CREATE (:Student {name: “Frank”})-[:BOUGHT]->(:BookType {name: “Reference”}) 
+a. List the books of type “text”: 
+MATCH (b:BookType {name: “Text”}) RETURN b; 
+b. List the name of the student who bought text and reference types of books: 
+MATCH (s:Student)-[:BOUGHT]->(b:BookType) 
+WHERE b.name IN [“Text”, “Reference”] 
+RETURN DISTINCT s.name; 
+c. List the most recommended book type: 
+MATCH (b:BookType)<-[:RECOMMENDS]-(s:Student) 
+RETURN b.name, COUNT(s) AS recommendationCount 
+ORDER BY recommendationCount DESC 
+LIMIT 1; 
+d. List the student who bought more than one type of book: 
+MATCH (s:Student)-[:BOUGHT]->(b:BookType) 
+WITH s, COLLECT(DISTINCT b) AS bookTypes 
+WHERE SIZE(bookTypes) > 1 
+RETURN DISTINCT s.name; 
+ 

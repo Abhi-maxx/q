@@ -1,0 +1,101 @@
+Slip 19
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+<meta charset=”UTF-8”>
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0”>
+<title>Download Page</title>
+<style>
+Body {
+Display: flex;
+Align-items: center;
+Justify-content: center;
+Height: 100vh;
+Margin: 0;
+}
+#progressBar {
+Width: 300px;
+Height: 20px;
+Background-color: #ddd;
+Border-radius: 5px;
+Overflow: hidden;
+}
+#progress {
+Height: 100%;
+Width: 0;
+Background-color: #4CAF50;
+Transition: width 0.3s ease;
+}
+</style>
+</head>
+<body>
+<button onclick=”startDownload()”>Start Download</button>
+<div id=”progressBar”>
+<div id=”progress”></div>
+</div>
+<script>
+Function startDownload() {
+Const progressBar = document.getElementById(‘progress’);
+Let progressValue = 0;
+Let intervalId;
+Const changeColor = () => {
+Const colors = [‘#4CAF50’, ‘#2196F3’, ‘#FF9800’];
+Const randomColor = colors[Math.floor(Math.random() * colors.length)];
+progressBar.style.backgroundColor = randomColor;
+};
+intervalId = setInterval(() => {
+progressValue += 10;
+progressBar.style.width = progressValue + ‘%’;
+if (progressValue >= 100) {
+clearInterval(intervalId);
+}
+If (progressValue % 30 === 0) {
+changeColor();
+}
+}, 1000);
+}
+</script>
+</body>
+</html>
+
+
+
+Q2)
+// Create Manufacturers
+CREATE (:Manufacturer {name: “DELL”});
+CREATE (:Manufacturer {name: “HP”});
+// Create Laptops
+CREATE (:Laptop {model: “Inspiron”, characteristics: “High performance, lightweight”})-
+[:PRODUCES]->(:Manufacturer {name: “DELL”});
+CREATE (:Laptop {model: “Spectre”, characteristics: “Ultra-thin, powerful”})-
+[:PRODUCES]->(:Manufacturer {name: “HP”});
+// Create Customers
+CREATE (:Customer {name: “John Doe”});
+CREATE (:Customer {name: “Jane Smith”});
+// Customer Purchase
+MATCH (c:Customer {name: “John Doe”}), (l:Laptop {model: “Inspiron”})
+CREATE (c)-[:BOUGHT]->(:Purchase {purchaseDate: “26/01/2023”})-[:OF_LAPTOP]->(l);
+// Recommendations and Reviews
+MATCH (c:Customer {name: “Jane Smith”}), (l:Laptop {model: “Spectre”})
+CREATE (c)-[:RECOMMENDS]->(:Recommendation)-[:OF_LAPTOP]->(l);
+MATCH (c:Customer {name: “John Doe”}), (l:Laptop {model: “Inspiron”})
+CREATE (c)-[:REVIEWED]->(:Review {comment: “Great laptop”, rating: 4})-
+[:OF_LAPTOP]->(l);
+a. List the characteristics of a specific laptop (replace “LaptopModel” with the
+specific laptop model):
+MATCH (l:Laptop {model: “LaptopModel”})
+RETURN l.characteristics;
+b. List the names of customers who bought a “DELL” laptop:
+MATCH (c:Customer)-[:BOUGHT]->(:Purchase)-[:OF_LAPTOP]->(:Laptop)-
+[:PRODUCES]->(:Manufacturer {name: “DELL”})
+RETURN DISTINCT c.name;
+c. List the customers who purchased a device on a specific date (replace
+“26/01/2023” with the specific date):
+MATCH (c:Customer)-[:BOUGHT]->(p:Purchase {purchaseDate: “26/01/2023”})
+RETURN DISTINCT c.name;
+d. List the most recommended device:
+MATCH (l:Laptop)<-[:OF_LAPTOP]-(:Recommendation)<-[:RECOMMENDS]-(:Customer)
+RETURN l.model, COUNT(DISTINCT (:Customer)-[:RECOMMENDS]-
+>(:Recommendation)-[:OF_LAPTOP]->(l)) AS recommendations
+ORDER BY recommendations DESC
+LIMIT 1;

@@ -1,0 +1,85 @@
+Q1)
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+<meta charset=”UTF-8”>
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0”>
+<title>2D Transformation Example</title>
+<style>
+Body {
+Display: flex;
+Align-items: center;
+Justify-content: center;
+Height: 100vh;
+Margin: 0;
+}
+Img {
+Transform-origin: center center;
+Transition: transform 0.5s ease-in-out;
+}
+</style>
+</head>
+<body>
+<img id=”transformImage” src=”your-image-url.jpg” alt=”Transformed Image”
+width=”200”>
+<script>
+Const transformImage = document.getElementById(‘transformImage’);
+// Rotate the image
+transformImage.style.transform = ‘rotate(45deg)’;
+// Scale the image
+setTimeout(() => {
+transformImage.style.transform = ‘scale(1.5)’;
+}, 1000);
+// Translate the image
+setTimeout(() => {
+transformImage.style.transform = ‘translate(50px, 50px)’;
+}, 2000);
+</script>
+</body>
+</html>
+
+
+
+
+
+
+Q2)
+// Create Doctors
+CREATE (:Doctor {name: “Dr. Smith”})-[:SPECIALIZED_IN]->(:Specialization {name:
+“Orthopedic”});
+CREATE (:Doctor {name: “Dr. Patel”})-[:SPECIALIZED_IN]->(:Specialization {name:
+“Pediatrics”});
+// Create Hospitals
+CREATE (:Hospital {name: “City Hospital”});
+CREATE (:Hospital {name: “Seren Medows”});
+// Connect Doctors to Hospitals
+MATCH (d:Doctor {name: “Dr. Smith”}), (h:Hospital {name: “City Hospital”})
+CREATE (d)-[:WORKS_IN]->(h);
+MATCH (d:Doctor {name: “Dr. Patel”}), (h:Hospital {name: “Seren Medows”})
+CREATE (d)-[:WORKS_IN]->(h);
+// Create Reviews and Recommendations
+CREATE (:Person {name: “Person1”})-[:RECOMMENDED]->(d:Doctor {name: “Dr.
+Smith”});
+CREATE (:Person {name: “Person2”})-[:REVIEWED]->(:Review {comment: “Good
+experience”, rating: 4})-[:OF_DOCTOR]->(d:Doctor {name: “Dr. Patel”});
+a. List the Orthopedic doctors in a specific area (replace “AreaX” with the specific
+area):
+MATCH (d:Doctor)-[:SPECIALIZED_IN]->(:Specialization {name: “Orthopedic”})-
+[:WORKS_IN]->(h:Hospital {area: “AreaX”})
+RETURN DISTINCT d.name;
+b. List the doctors who specialize in a specific field (replace “SpecializationName”
+with the specific specialization):
+MATCH (d:Doctor)-[:SPECIALIZED_IN]->(:Specialization {name: “SpecializationName”})
+RETURN DISTINCT d.name;
+c. List the most recommended Pediatrics in a specific hospital (replace
+“HospitalName” with the specific hospital):
+MATCH (d:Doctor)-[:SPECIALIZED_IN]->(:Specialization {name: “Pediatrics”})-
+[:WORKS_IN]->(h:Hospital {name: “HospitalName”})
+RETURN d.name, COUNT(()-[:RECOMMENDED]->(d)) AS recommendations
+ORDER BY recommendations DESC
+LIMIT 1;
+d. List all doctors who visit more than 2 hospitals:
+MATCH (d:Doctor)-[:WORKS_IN]->(h:Hospital)
+WITH d, COUNT(DISTINCT h) AS hospitalCount
+WHERE hospitalCount > 2
+RETURN d.name;

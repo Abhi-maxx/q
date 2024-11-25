@@ -1,0 +1,97 @@
+     //Q1
+
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+<meta charset=”UTF-8”>
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0”>
+<style>
+#progress-bar {
+Width: 100%;
+Height: 30px;
+Background-color: #f1f1f1;
+Margin-top: 20px;
+Display: none;
+}
+#progress {
+Height: 100%;
+Width: 0;
+Background-color: #4CAF50;
+}
+</style>
+<script>
+Function startDownload() {
+// Show the progress bar
+Document.getElementById(“progress-bar”).style.display = “block”;
+// Initialize the progress bar
+Let progressBar = document.getElementById(“progress”);
+Let progressValue = 0;
+// Increase the progress by 5 every second
+Let interval = setInterval(function () {
+If (progressValue < 100) {
+progressValue += 5;
+progressBar.style.width = progressValue + “%”;
+} else {
+// Download completed, show alert
+clearInterval(interval);
+alert(“Download completed”);
+}
+}, 1000);
+}
+</script>
+</head>
+<body>
+<button onclick=”startDownload()”>Start Download</button>
+<div id=”progress-bar”>
+<div id=”progress”></div>
+</div>
+</body>
+</html>
+
+
+Q2)
+// Create Nursery and Items
+CREATE (:Nursery {name: “GreenGarden”})-[:HAS_PLANT]->(:Plant {name: “Rose”, type:
+“Flowering”, quantity: 1000})
+CREATE (:Nursery {name: “GreenGarden”})-[:HAS_PLANT]->(:Plant {name: “Tulip”, type:
+“Flowering”, quantity: 800})
+CREATE (:Nursery {name: “GreenGarden”})-[:HAS_PLANT]->(:Plant {name: “Creeper”,
+type: “Creeping”, quantity: 600})
+CREATE (:Nursery {name: “GreenGarden”})-[:HAS_FERTILIZER]->(:Fertilizer {name:
+“GrowthMax”})
+CREATE (:Nursery {name: “GreenGarden”})-[:HAS_PRODUCT]->(:Product {name:
+“Gardening Gloves”})
+// Create Customers
+CREATE (:Customer {name: “John Doe”})-[:VISITS]->(:Nursery {name: “GreenGarden”})
+CREATE (:Customer {name: “Jane Smith”})-[:VISITS]->(:Nursery {name: “GreenGarden”})
+// Customer Purchases
+MATCH (c:Customer {name: “John Doe”}), (p:Plant {name: “Rose”})
+CREATE (c)-[:MADE_PURCHASE]->(:Purchase {purchaseDate: “2023-02-10”})-
+[:OF_PLANT]->(p)
+MATCH (c:Customer {name: “Jane Smith”}), (p:Plant {name: “Creeper”})
+CREATE (c)-[:MADE_PURCHASE]->(:Purchase {purchaseDate: “2023-02-09”})-
+[:OF_PLANT]->(p)
+// Customer Uses App
+MATCH (c:Customer {name: “John Doe”}), (a:App {name: “NurseryApp”})
+CREATE (c)-[:USES_APP]->(a)
+// Customer Recommendations
+MATCH (c:Customer {name: “Jane Smith”}), (a:App {name: “NurseryApp”})
+CREATE (c)-[:RECOMMENDS]->(:Recommendation {comment: “Great app”, rating: 5})-
+[:OF_APP]->(a)
+a. List the types of plants from your graph model:
+MATCH (p:Plant)
+RETURN DISTINCT p.type;
+b. List the popular flowering plants:
+MATCH (p:Plant {type: “Flowering”})
+RETURN p.name, p.quantity
+ORDER BY p.quantity DESC
+LIMIT 5;
+c. List the names of plants sold where qty > 500 in the last 2 days:
+MATCH (p:Plant)-[:OF_PLANT]->(purchase:Purchase)
+WHERE p.quantity > 500 AND purchase.purchaseDate >= date(“2023-02-09”)
+RETURN DISTINCT p.name;
+d. List the names of suppliers in decreasing order who supplies “Creepers”:
+MATCH (n:Nursery)-[:HAS_PLANT]->(p:Plant {name: “Creeper”})<-[:OF_PLANT]-
+(purchase:Purchase)-[:MADE_PURCHASE]->(customer:Customer)
+RETURN n.name, COUNT(DISTINCT customer) AS supplierCount
+ORDER BY supplierCount DESC;

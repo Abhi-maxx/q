@@ -1,0 +1,143 @@
+//Q1
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F0F0F0;
+        }
+
+        .contact-form {
+            width: 400px;
+            margin: 0 auto;
+            background-color: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .contact-form p {
+            margin-bottom: 10px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+        }
+
+        .contact-form button {
+            background-color: #4CAF50;
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-form">
+        <h2 style="color: #FF8C00;">Contact Us</h2>
+        <p style="color: #FF8C00;">We would love to hear from you!</p>
+
+        <form action="#" method="post">
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" name="first-name" placeholder="Enter First Name" required>
+
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" name="last-name" placeholder="Enter Last Name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter email" required>
+
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" placeholder="Enter your comment" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Q2
+/ //Create Customers
+CREATE (:Customer {name: “John Doe”});
+CREATE (:Customer {name: “Samantha”});
+// Create Orders
+CREATE (:Order {orderDate: “1/1/2023”});
+// Create Restaurants
+CREATE (:Restaurant {name: “Restaurant1”, area: “Area1”, rating: 4.5});
+CREATE (:Restaurant {name: “Restaurant2”, area: “Area2”, rating: 3.8});
+// Connect Restaurants to Industries
+MATCH (r:Restaurant), (i:Industry {name: “ZOMATO”})
+CREATE (r)-[:CONNECTED_TO]->(i);
+MATCH (r:Restaurant), (i:Industry {name: “Swiggy”})
+CREATE (r)-[:CONNECTED_TO]->(i);
+// Create Offers
+CREATE (:Offer {discount: 10});
+// Connect Customers to Orders, Restaurants, Offers
+MATCH (c:Customer {name: “John Doe”}), (o:Order), (r:Restaurant {name:
+“Restaurant1”}), (of:Offer)
+CREATE (c)-[:PLACED_ORDER]->(o)-[:ORDERED_FROM]->(r);
+CREATE (c)-[:GETS_OFFER]->(of);
+// Create Ratings
+CREATE (:Rating {stars: 4});
+// Connect Customers to Ratings
+MATCH (c:Customer {name: “John Doe”}), (r:Restaurant {name: “Restaurant1”}),
+(ra:Rating)
+CREATE (c)-[:GIVES_RATING]->(ra);
+CREATE (ra)-[:FOR]->(r);
+// Create Recommendations
+MATCH (c1:Customer {name: “John Doe”}), (c2:Customer {name: “Samantha”})
+CREATE (c1)-[:RECOMMENDS_TO]->(c2);
+a. Count the number of customers who placed an order on “1/1/2023”:
+MATCH (c:Customer)-[:PLACED_ORDER]->(o:Order {orderDate: “1/1/2023”})
+RETURN COUNT(DISTINCT c) AS numberOfCustomers;
+b. List the names of customers whose name starts with “S” and place orders using
+Swiggy:
+MATCH (c:Customer)-[:PLACED_ORDER]->(o:Order)-[:ORDERED_FROM]-
+>(:Restaurant)-[:CONNECTED_TO]->(:Industry {name: “Swiggy”})
+WHERE c.name STARTS WITH “S”
+RETURN DISTINCT c.name;
+c. List the names of hotels with a high rating (>=4):
+MATCH (r:Restaurant)
+WHERE r.rating >= 4
+RETURN r.name;
+d. List the most recommended hotels in an area (replace “AreaX” with the specific
+area):
+MATCH (c:Customer)-[:RECOMMENDS_TO]->(:Customer)-[:PLACED_ORDER]-
+>(:Order)-[:ORDERED_FROM]->(r:Restaurant {area: “AreaX”})
+RETURN r.name, COUNT(DISTINCT c) AS recommendations
+ORDER BY recommendations DESC
+LIMIT 1;

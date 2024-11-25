@@ -1,0 +1,137 @@
+////Q1)
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+<meta charset=”UTF-8”>
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0”>
+<title>Travel Plan Booking Form</title>
+<style>
+Body {
+Font-family: Arial, sans-serif;
+Margin: 20px;
+}
+Form {
+Max-width: 400px;
+Margin: auto;
+}
+Label {
+Display: block;
+Margin-bottom: 8px;
+}
+Input, select {
+Width: 100%;
+Padding: 8px;
+Margin-bottom: 12px;
+Box-sizing: border-box;
+}
+Input[type=”checkbox”] {
+Width: auto;
+Margin-right: 5px;
+}
+Button {
+Background-color: #4CAF50;
+Color: white;
+Padding: 10px 15px;
+Border: none;
+Border-radius: 4px;
+Cursor: pointer;
+}
+Button[type=”reset”] {
+Background-color: #f44336;
+}
+</style>
+</head>
+<body>
+<form id=”travelForm”>
+<label for=”name”>Name:</label>
+<input type=”text” id=”name” name=”name” required>
+<label for=”address”>Address:</label>
+<input type=”text” id=”address” name=”address” required>
+<label for=”contact”>Contact No.:</label>
+<input type=”tel” id=”contact” name=”contact” required>
+<label>Gender:</label>
+<input type=”radio” id=”male” name=”gender” value=”male” required>
+<label for=”male”>Male</label>
+<input type=”radio” id=”female” name=”gender” value=”female” required>
+<label for=”female”>Female</label>
+<label for=”season”>Preferred Season:</label>
+<input type=”checkbox” id=”spring” name=”season” value=”spring”>
+<label for=”spring”>Spring</label>
+<input type=”checkbox” id=”summer” name=”season” value=”summer”>
+<label for=”summer”>Summer</label>
+<input type=”checkbox” id=”autumn” name=”season” value=”autumn”>
+<label for=”autumn”>Autumn</label>
+<input type=”checkbox” id=”winter” name=”season” value=”winter”>
+<label for=”winter”>Winter</label>
+<label for=”locationType”>Location Type:</label>
+<select id=”locationType” name=”locationType” required>
+<option value=”” disabled selected>Select Location Type</option>
+<option value=”beach”>Beach</option>
+<option value=”mountain”>Mountain</option>
+<option value=”city”>City</option>
+<option value=”countryside”>Countryside</option>
+</select>
+<button type=”submit”>Submit</button>
+<button type=”reset”>Reset</button>
+</form>
+<script>
+Document.getElementById(‘travelForm’).addEventListener(‘submit’, function (e) {
+e.preventDefault(); // Prevent the default form submission
+// You can add code here to handle the form submission, e.g., sending data to a
+server
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+Q2)
+// Create Scholarships
+CREATE (:Scholarship {name: “Merit Scholarship”})-[:FOR_CATEGORY]->(:Category
+{name: “General”});
+CREATE (:Scholarship {name: “OBC Scholarship”})-[:FOR_CATEGORY]->(:Category
+{name: “OBC”});
+CREATE (:Scholarship {name: “Economically Weaker Section Scholarship”})-
+[:FOR_CATEGORY]->(:Category {name: “EWS”});
+// Create Students
+CREATE (:Student {name: “John Doe”, income: 50000})-[:APPLIED_FOR]->(:Scholarship
+{name: “Merit Scholarship”});
+CREATE (:Student {name: “Alice Smith”, income: 70000})-[:APPLIED_FOR]-
+>(:Scholarship {name: “OBC Scholarship”});
+CREATE (:Student {name: “Bob Johnson”, income: 30000})-[:APPLIED_FOR]-
+>(:Scholarship {name: “Economically Weaker Section Scholarship”});
+// Students benefitting from scholarships
+MATCH (s:Student)-[:APPLIED_FOR]->(sch:Scholarship)
+WHERE s.name = “John Doe” AND sch.name = “Merit Scholarship”
+CREATE (s)-[:BENEFITS]->(sch);
+MATCH (s:Student)-[:APPLIED_FOR]->(sch:Scholarship)
+WHERE s.name = “Alice Smith” AND sch.name = “OBC Scholarship”
+CREATE (s)-[:BENEFITS]->(sch);
+// Students recommending others
+MATCH (s1:Student {name: “John Doe”}), (s2:Student {name: “Alice Smith”})
+CREATE (s1)-[:RECOMMENDS]->(s2);
+a. List the names of scholarships for the OBC category:
+MATCH (sch:Scholarship)-[:FOR_CATEGORY]->(cat:Category {name: “OBC”})
+RETURN sch.name;
+b. Count the number of students benefitted by a specific scholarship in the year
+2020-2021 (assumed from the question context):
+MATCH (s:Student)-[:BENEFITS]->(sch:Scholarship {name: “Merit Scholarship”})
+WHERE s.income <= sch.income_limit
+RETURN COUNT(s) AS numberOfStudents;
+c. Update the income limit for a specific scholarship:
+MATCH (sch:Scholarship {name: “Merit Scholarship”})
+SET sch.income_limit = 60000;
+d. List the most popular scholarship (assumed based on the number of students
+benefitted):
+MATCH (sch:Scholarship)
+RETURN sch.name, SIZE((:Student)-[:BENEFITS]->(sch)) AS popularity
+ORDER BY popularity DESC
+LIMIT 1;

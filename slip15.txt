@@ -1,0 +1,105 @@
+Q1)
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+<meta charset=”UTF-8”>
+<meta name=”viewport” content=”width=device-width, initial-scale=1.0”>
+<title>Registration Form</title>
+<link rel=”stylesheet”
+href=https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css>
+</head>
+<body>
+<div class=”container”>
+<div class=”row”>
+<div class=”col-md-6 offset-md-3”>
+<h4>Registration Form</h4>
+<form>
+<div class=”form-group”>
+<label for=”firstname”>First Name</label>
+<input type=”text” class=”form-control” id=”firstname” required>
+</div>
+<div class=”form-group”>
+<label for=”lastname”>Last Name</label>
+<input type=”text” class=”form-control” id=”lastname” required>
+</div>
+<div class=”form-group”>
+<label for=”department”>Department / Office</label>
+<select class=”form-control” id=”department” required>
+<option>IT</option>
+<option>Sales</option>
+<option>HR</option>
+<option>Marketing</option>
+</select>
+</div>
+<div class=”form-group”>
+<label for=”username”>Username</label>
+<input type=”text” class=”form-control” id=”username” required>
+</div>
+<div class=”form-group”>
+<label for=”password”>Password</label>
+<input type=”password” class=”form-control” id=”password” required>
+</div>
+<div class=”form-group”>
+<label for=”confirm-password”>Confirm Password</label>
+<input type=”password” class=”form-control” id=”confirm-password”
+required>
+</div>
+<div class=”form-group”>
+<label for=”email”>E-Mail</label>
+<input type=”email” class=”form-control” id=”email” required>
+</div>
+<div class=”form-group”>
+<label for=”contact”>Contact No.</label>
+<input type=”text” class=”form-control” id=”contact” required>
+</div>
+<button type=”submit” class=”btn btn-primary”>Submit</button>
+</form>
+</div>
+</div>
+</div>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js></script>
+<script
+src=https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js></scr
+ipt>
+<script
+src=https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js></script>
+</body>
+</html>
+
+
+
+
+
+Q2)
+// Create Movies
+CREATE (:Movie {title: “Movie1”})-[:BUSINESS]->(:Business {revenue: 1000000});
+CREATE (:Movie {title: “Movie2”})-[:BUSINESS]->(:Business {revenue: 1500000});
+// Create Actors
+CREATE (:Actor {name: “Shahrukh Khan”});
+CREATE (:Actor {name: “Amitabh Bachchan”});
+// Actors acting in Movies
+MATCH (a:Actor {name: “Shahrukh Khan”}), (m:Movie {title: “Movie1”})
+CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor {name: “Amitabh Bachchan”}), (m:Movie {title: “Movie2”})
+CREATE (a)-[:ACTED_IN]->(m);
+// Awards Received by Movies
+MATCH (m:Movie {title: “Movie1”})
+CREATE (m)-[:AWARD_RECEIVED]->(:Award {category: “Best Movie”});
+MATCH (m:Movie {title: “Movie2”})
+CREATE (m)-[:AWARD_RECEIVED]->(:Award {category: “Best Actor”});
+a. Find the movie which made the highest business:
+MATCH (m:Movie)-[:BUSINESS]->(b:Business)
+RETURN m.title, b.revenue
+ORDER BY b.revenue DESC
+LIMIT 1;
+b. Display details of a movie along with actors:
+MATCH (m:Movie {title: “Movie1”})<-[:ACTED_IN]-(a:Actor)
+RETURN m.title, COLLECT(a.name) AS actors;
+c. List all the movies of “Shahrukh Khan”:
+MATCH (a:Actor {name: “Shahrukh Khan”})-[:ACTED_IN]->(m:Movie)
+RETURN m.title;
+d. Display all movies having more than 2 awards received:
+MATCH (m:Movie)-[:AWARD_RECEIVED]->(a:Award)
+WITH m, COUNT(a) AS awardCount
+WHERE awardCount > 2
+RETURN m.title, awardCount;

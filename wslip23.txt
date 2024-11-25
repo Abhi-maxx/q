@@ -1,0 +1,129 @@
+Slip 23 
+ 
+Q1) 
+ 
+<!DOCTYPE html> 
+<html lang=”en”> 
+<head> 
+    <meta charset=”UTF-8”> 
+    <meta name=”viewport” content=”width=device-width, initial-scale=1.0”> 
+    <title>Image Display with Rotation</title> 
+    <style> 
+        Body { 
+            Margin: 0; 
+            Display: flex; 
+            Align-items: center; 
+            Justify-content: center; 
+            Height: 100vh; 
+            Background-color: #f0f0f0; 
+        } 
+ 
+        #imageContainer { 
+            Display: flex; 
+            Flex-wrap: wrap; 
+        } 
+ 
+        .imageTile { 
+            Width: 150px; 
+            Height: 150px; 
+            Overflow: hidden; 
+            Border: 1px solid #ddd; 
+            Margin: 5px; 
+        } 
+ 
+        Img { 
+            Max-width: 100%; 
+            Max-height: 100%; 
+            Transform-origin: center center; 
+            Transition: transform 0.3s ease; 
+        } 
+ 
+        Button { 
+            Margin-top: 20px; 
+            Padding: 10px; 
+            Font-size: 16px; 
+            Cursor: pointer; 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+    <div id=”imageContainer”> 
+        <!—Replace “your-image-url.jpg” with the actual URL or path of your image → 
+        <div class=”imageTile”> 
+            <img src=”your-image-url.jpg” alt=”Image Tile 1” id=”imageTile1”> 
+        </div> 
+        <div class=”imageTile”> 
+            <img src=”your-image-url.jpg” alt=”Image Tile 2” id=”imageTile2”> 
+        </div> 
+        <div class=”imageTile”> 
+            <img src=”your-image-url.jpg” alt=”Image Tile 3” id=”imageTile3”> 
+        </div> 
+        <!—Add more image tiles as needed → 
+    </div> 
+ 
+    <button onclick=”rotateClockwise()”>Rotate Clockwise</button> 
+    <button onclick=”rotateAntiClockwise()”>Rotate Anti-clockwise</button> 
+ 
+    <script> 
+        Function rotateClockwise() { 
+            rotateImage(“imageContainer”, 90); 
+        } 
+ 
+        Function rotateAntiClockwise() { 
+            rotateImage(“imageContainer”, -90); 
+        } 
+ 
+        Function rotateImage(containerId, angle) { 
+            Const container = document.getElementById(containerId); 
+            Const imageTiles = container.querySelectorAll(‘.imageTile img’); 
+ 
+            imageTiles.forEach(img => { 
+                img.style.transform = `rotate(${angle}deg)`; 
+            }); 
+        } 
+    </script> 
+</body> 
+</html> 
+Q2) 
+// Create Automobile Industry and Vehicle Types 
+CREATE (:AutomobileIndustry {name: “XYZ Automobiles”})-[:MANUFACTURES]
+>(:VehicleType {name: “Two-Wheeler”, characteristics: “Characteristic 1, Characteristic 
+2”}) 
+CREATE (:AutomobileIndustry {name: “XYZ Automobiles”})-[:MANUFACTURES]
+>(:VehicleType {name: “Four-Wheeler”, characteristics: “Characteristic 3, Characteristic 
+4”}) 
+CREATE (:AutomobileIndustry {name: “XYZ Automobiles”})-[:MANUFACTURES]
+>(:VehicleType {name: “Electric Vehicle”, characteristics: “Characteristic 5, 
+Characteristic 6”}) 
+// Create Customers, Purchases, and Recommendations 
+CREATE (:Customer {name: “John Doe”})-[:BOUGHT]->(:VehicleType {name: “Two
+Wheeler”}) 
+CREATE (:Customer {name: “Jane Smith”})-[:BOUGHT]->(:VehicleType {name: “Four
+Wheeler”}) 
+CREATE (:Customer {name: “Bob”})-[:BOUGHT]->(:VehicleType {name: “Electric 
+Vehicle”}) 
+CREATE (:Customer {name: “Alice”})-[:RECOMMENDS]->(:VehicleType {name: “Two
+Wheeler”}) 
+CREATE (:Customer {name: “Charlie”})-[:RECOMMENDS]->(:VehicleType {name: “Four
+Wheeler”}) 
+CREATE (:Customer {name: “David”})-[:RECOMMENDS]->(:VehicleType {name: “Electric 
+Vehicle”}) 
+CREATE (:Customer {name: “Eva”})-[:BOUGHT]->(:VehicleType {name: “Two-Wheeler”}) 
+CREATE (:Customer {name: “Frank”})-[:BOUGHT]->(:VehicleType {name: “Four
+Wheeler”}) 
+a. List the characteristics of four-wheeler types: 
+MATCH (:VehicleType {name: “Four-Wheeler”}) RETURN DISTINCT characteristics; 
+b. List the names of customers who bought a two-wheeler vehicle: 
+MATCH (c:Customer)-[:BOUGHT]->(:VehicleType {name: “Two-Wheeler”}) RETURN 
+DISTINCT c.name; 
+c. List the customers who bought more than one type of vehicle: 
+MATCH (c:Customer)-[:BOUGHT]->(vt:VehicleType) 
+WITH c, COLLECT(DISTINCT vt) AS vehicleTypes 
+WHERE SIZE(vehicleTypes) > 1 
+RETURN DISTINCT c.name; 
+d. List the most recommended vehicle type: 
+MATCH (vt:VehicleType)<-[:RECOMMENDS]-(c:Customer) 
+RETURN vt.name, COUNT(c) AS recommendationCount 
+ORDER BY recommendationCount DESC 
+LIMIT 1; 

@@ -1,0 +1,123 @@
+Slip 22 
+ 
+Q1) 
+ 
+<!DOCTYPE html> 
+<html lang=”en”> 
+<head> 
+    <meta charset=”UTF-8”> 
+    <meta name=”viewport” content=”width=device-width, initial-scale=1.0”> 
+    <title>3D Text Effects</title> 
+    <style> 
+        Body { 
+            Font-family: ‘Arial’, sans-serif; 
+            Background-color: #f0f0f0; 
+            Margin: 0; 
+            Display: flex; 
+            Align-items: center; 
+            Justify-content: center; 
+            Height: 100vh; 
+        } 
+ 
+        .container { 
+            Text-align: center; 
+        } 
+ 
+        H1 { 
+            Font-size: 48px; 
+            Color: #333; 
+            Text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+            Margin-bottom: 20px; 
+        } 
+ 
+        P { 
+            Font-size: 18px; 
+            Line-height: 1.6; 
+            Color: #555; 
+            Margin-bottom: 30px; 
+        } 
+ 
+        .overflow-text { 
+            Overflow: hidden; 
+            White-space: nowrap; 
+            Text-overflow: ellipsis; 
+            Max-width: 300px; 
+            Margin: 0 auto; 
+        } 
+ 
+        .word-wrap-text { 
+            Word-wrap: break-word; 
+            Max-width: 300px; 
+            Margin: 0 auto; 
+        } 
+    </style> 
+</head> 
+<body> 
+ 
+    <div class=”container”> 
+        <h1>3D Text Effects</h1> 
+        <p>Explore various text effects like text shadow, text overflow, word wrap, etc.</p> 
+ 
+        <div class=”overflow-text”> 
+            <h2>Overflow Text: This is a long text that overflows the container and is truncated 
+with ellipsis.</h2> 
+        </div> 
+ 
+        <div class=”word-wrap-text”> 
+            <h2>Word Wrap Text: This is a long text that wraps onto the next line when it 
+reaches the container’s width limit.</h2> 
+        </div> 
+    </div> 
+ 
+</body> 
+</html> 
+ 
+ 
+Q2) 
+ 
+ 
+// Create Car Showroom and Models 
+CREATE (:CarShowroom {name: “XYZ Showroom”})-[:HAS_MODEL]->(:CarModel {name: 
+“Honda City”}) 
+CREATE (:CarShowroom {name: “XYZ Showroom”})-[:HAS_MODEL]->(:CarModel {name: 
+“Skoda”}) 
+CREATE (:CarShowroom {name: “XYZ Showroom”})-[:HAS_MODEL]->(:CarModel {name: 
+“Creta”}) 
+CREATE (:CarShowroom {name: “XYZ Showroom”})-[:HAS_MODEL]->(:CarModel {name: 
+“Swift”}) 
+CREATE (:CarShowroom {name: “XYZ Showroom”})-[:HAS_MODEL]->(:CarModel {name: 
+“Ertiga”}) 
+// Create Sales Staff and Sections 
+CREATE (:SalesStaff {name: “Mr. Narayan”})-[:HANDLES_SECTION]->(:Section {name: 
+“Honda City”}) 
+CREATE (:SalesStaff {name: “Mr. Narayan”})-[:HANDLES_SECTION]->(:Section {name: 
+“Skoda”}) 
+// Create Customers, Enquiries, and Purchases 
+CREATE (:Customer {name: “John Doe”})-[:ENQUIRED_ABOUT]->(:Enquiry {details: 
+“Interested in Honda City”}) 
+CREATE (:Customer {name: “Jane Smith”})-[:ENQUIRED_ABOUT]->(:Enquiry {details: 
+“Interested in Skoda”}) 
+CREATE (:Customer {name: “Bob”})-[:ENQUIRED_ABOUT]->(:Enquiry {details: 
+“Enquiring about Swift”}) 
+CREATE (:Customer {name: “Alice”})-[:MADE_PURCHASE]->(:Purchase {details: 
+“Purchased Honda City”}) 
+// Connect Customers to Sections for Purchases 
+MATCH (c:Customer {name: “John Doe”})-[:MADE_PURCHASE]->(p:Purchase)
+[:OF_MODEL]->(m:CarModel {name: “Honda City”}) 
+MERGE (c)-[:ENQUIRED_ABOUT]->(:Enquiry {details: “Interested in Honda City”}) 
+a. List the types of cars available in the showroom: 
+MATCH (s:CarShowroom)-[:HAS_MODEL]->(m:CarModel) 
+RETURN DISTINCT m.name; 
+b. List the sections handled by Mr. Narayan: 
+MATCH (s:SalesStaff {name: “Mr. Narayan”})-[:HANDLES_SECTION]->(sec:Section) 
+RETURN DISTINCT sec.name; 
+c. List the names of customers who have done only enquiry but not made any 
+purchase: 
+MATCH (c:Customer)-[:ENQUIRED_ABOUT]->(e:Enquiry) 
+WHERE NOT (c)-[:MADE_PURCHASE]->(:Purchase) 
+RETURN DISTINCT c.name; 
+d. List the highly sale car model: 
+MATCH (m:CarModel)<-[:OF_MODEL]-(p:Purchase) 
+RETURN m.name, COUNT(p) AS purchaseCount 
+ORDER BY purchaseCount DESC 
+LIMIT 1; 

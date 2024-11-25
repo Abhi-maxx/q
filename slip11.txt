@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        main {
+            display: flex;
+            flex: 1;
+        }
+        nav {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        article {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+    </header>
+    <main>
+        <nav>
+            <a href="#" onclick="showDepartment('department1')">Department 1</a>
+            <a href="#" onclick="showDepartment('department2')">Department 2</a>
+            <a href="#" onclick="showDepartment('department3')">Department 3</a>
+            <!-- Add more departments as needed -->
+        </nav>
+        <article id="department-info">
+            <!-- Department information will be displayed here -->
+        </article>
+    </main>
+    <script>
+        function showDepartment(department) {
+            // You can replace the following line with an AJAX request to fetch department
+            // information from the server
+            const departmentInfo = getDepartmentInfo(department);
+            // Display department information in the article
+            document.getElementById('department-info').innerHTML = departmentInfo;
+        }
+
+        function getDepartmentInfo(department) {
+            // Simulated department information, replace this with actual data
+            const departmentData = {
+                department1: 'Information for Department 1',
+                department2: 'Information for Department 2',
+                department3: 'Information for Department 3',
+                // Add more departments as needed
+            };
+            return departmentData[department] || 'Department information not available.';
+        }
+    </script>
+</body>
+</html>
+
+
+
+<!-- Q2:=> -->
+
+
+
+// Product Collection
+[
+{ “product_id”: 101, “product_name”: “Laptop”, “price”: 1000 },
+{ “product_id”: 102, “product_name”: “Smartphone”, “price”: 500 },
+{ “product_id”: 103, “product_name”: “Headphones”, “price”: 100 },
+// ... (additional products)
+]
+// Customer Collection
+[
+{ “customer_id”: 201, “customer_name”: “John Doe” },
+{ “customer_id”: 202, “customer_name”: “Alice Smith” },
+{ “customer_id”: 203, “customer_name”: “Mr. Rajiv” },
+// ... (additional customers)
+]
+// Order Collection
+[
+{ “order_id”: 301, “customer_id”: 201, “products”: [ { “product_id”: 101, “quantity”: 2 },
+{ “product_id”: 102, “quantity”: 1 } ], “order_value”: 2500, “processed”: true },
+{ “order_id”: 302, “customer_id”: 202, “products”: [ { “product_id”: 103, “quantity”: 3 }
+], “order_value”: 300, “processed”: false },
+// ... (additional orders)
+]
+// Invoice Collection
+[
+{ “invoice_id”: 401, “order_id”: 301, “invoice_value”: 2500, “payment_status”: “Paid” },
+// ... (additional invoices)
+]
+a. List all products in the inventory:
+Db.product.find({})
+b. List the details of orders with a value >20000:
+c. List all the orders which have not been processed (invoice not generated):
+Db.order.find({ “processed”: false })
+d. List all the orders along with their invoice for “Mr. Rajiv”:
+Db.order.aggregate([
+{ $match: { “customer_id”: 203 } },
+{ $lookup: { from: “invoice”, localField: “order_id”, foreignField: “order_id”, as:
+“invoice_info” } },
+{ $unwind: “$invoice_info” },
+{ $project: { “order_id”: 1, “order_value”: 1, “invoice_info.invoice_id”: 1,
+“invoice_info.invoice_value”: 1, “invoice_info.payment_status”: 1 } }
+])
